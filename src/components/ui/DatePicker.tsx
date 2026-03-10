@@ -90,7 +90,6 @@ export function DatePicker() {
             onMonthChange={setMonth}
             numberOfMonths={2}
             navLayout="around"
-            showOutsideDays
             locale={getDatePickerLocale(locale)}
             className="dashboard-date-picker"
             classNames={{

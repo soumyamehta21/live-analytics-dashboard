@@ -105,8 +105,8 @@ input[type="range"]:focus-visible {
   border-radius: 9999px;
 }
 
-.dashboard-date-picker {
-  --rdp-accent-color: #4f39f6;
+.dashboard-date-picker.rdp-root {
+  --rdp-accent-color: #4338ca;
   --rdp-accent-background-color: rgba(99, 102, 241, 0.12);
   --rdp-day-height: 2rem;
   --rdp-day-width: 2rem;
@@ -139,15 +139,15 @@ input[type="range"]:focus-visible {
     var(--rdp-range_middle-background-color) 50%,
     transparent 50%
   );
-  --rdp-range_start-date-background-color: #4f39f6;
-  --rdp-range_end-date-background-color: #4f39f6;
-  --rdp-range_edge-hover-background-color: #4f39f6;
+  --rdp-range_start-date-background-color: #4338ca;
+  --rdp-range_end-date-background-color: #4338ca;
+  --rdp-range_edge-hover-background-color: #4338ca;
   --rdp-outside-color: #94a3b8;
   --rdp-outside-range-color: rgba(67, 56, 202, 0.72);
   --rdp-disabled-color: #cbd5e1;
 }
 
-.dark .dashboard-date-picker {
+.dark .dashboard-date-picker.rdp-root {
   --rdp-accent-color: #818cf8;
   --rdp-accent-background-color: rgba(129, 140, 248, 0.18);
   --rdp-nav-color: #cbd5e1;
@@ -261,25 +261,25 @@ input[type="range"]:focus-visible {
   border-radius: 999px;
 }
 
-.dashboard-date-picker .rdp-range_start .rdp-day_button {
+.dashboard-date-picker .rdp-range_start.rdp-selected .rdp-day_button {
   background-color: var(--rdp-range_start-date-background-color);
   color: var(--rdp-range_start-color);
   border-radius: var(--rdp-day_button-border-radius);
   font-weight: 700;
 }
 
-.dashboard-date-picker .rdp-range_start .rdp-day_button:hover {
+.dashboard-date-picker .rdp-range_start.rdp-selected .rdp-day_button:hover {
   background-color: var(--rdp-range_edge-hover-background-color);
 }
 
-.dashboard-date-picker .rdp-range_end .rdp-day_button {
+.dashboard-date-picker .rdp-range_end.rdp-selected .rdp-day_button {
   background-color: var(--rdp-range_end-date-background-color);
   color: var(--rdp-range_end-color);
   border-radius: var(--rdp-day_button-border-radius);
   font-weight: 700;
 }
 
-.dashboard-date-picker .rdp-range_end .rdp-day_button:hover {
+.dashboard-date-picker .rdp-range_end.rdp-selected .rdp-day_button:hover {
   background-color: var(--rdp-range_edge-hover-background-color);
 }
 
