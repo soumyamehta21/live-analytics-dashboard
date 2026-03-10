@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { FaBell } from "react-icons/fa";
 import { Popover, PopoverContent, PopoverTrigger } from "./Popover";
@@ -10,9 +10,9 @@ type NotificationDropdownProps = {
 
 type NotificationItem = {
   id: string;
-  title: string;
-  message: string;
-  time: string;
+  titleKey: string;
+  messageKey: string;
+  minutesAgo: number;
   tone: "indigo" | "emerald" | "amber";
 };
 
@@ -21,23 +21,23 @@ const STORAGE_KEY = "live-dashboard-unread-notifications";
 const NOTIFICATIONS: NotificationItem[] = [
   {
     id: "new-order",
-    title: "New enterprise order",
-    message: "A high-value checkout was completed from the pricing page.",
-    time: "Just now",
+    titleKey: "notificationNewOrderTitle",
+    messageKey: "notificationNewOrderMessage",
+    minutesAgo: 0,
     tone: "emerald",
   },
   {
     id: "traffic-spike",
-    title: "Traffic spike detected",
-    message: "Active visitors jumped above the recent session baseline.",
-    time: "2 min ago",
+    titleKey: "notificationTrafficSpikeTitle",
+    messageKey: "notificationTrafficSpikeMessage",
+    minutesAgo: 2,
     tone: "indigo",
   },
   {
     id: "trial-upgrade",
-    title: "Trial converted to paid",
-    message: "A returning user upgraded after revisiting the product page.",
-    time: "6 min ago",
+    titleKey: "notificationTrialUpgradeTitle",
+    messageKey: "notificationTrialUpgradeMessage",
+    minutesAgo: 6,
     tone: "amber",
   },
 ];
@@ -61,14 +61,43 @@ function resolveInitialUnreadCount(defaultCount: number) {
   return defaultCount;
 }
 
+function formatRelativeTime(
+  minutesAgo: number,
+  locale: string,
+  justNowLabel: string,
+) {
+  if (minutesAgo === 0) {
+    return justNowLabel;
+  }
+
+  return new Intl.RelativeTimeFormat(locale, { numeric: "auto" }).format(
+    -minutesAgo,
+    "minute",
+  );
+}
+
 export function NotificationDropdown({
   initialUnreadCount = NOTIFICATIONS.length,
   buttonClassName,
 }: NotificationDropdownProps) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [open, setOpen] = useState(false);
   const [unreadCount, setUnreadCount] = useState(() =>
-    resolveInitialUnreadCount(Math.min(initialUnreadCount, NOTIFICATIONS.length)),
+    resolveInitialUnreadCount(
+      Math.min(initialUnreadCount, NOTIFICATIONS.length),
+    ),
+  );
+  const locale = i18n.resolvedLanguage ?? i18n.language;
+
+  const notifications = useMemo(
+    () =>
+      NOTIFICATIONS.map((item) => ({
+        ...item,
+        title: t(item.titleKey),
+        message: t(item.messageKey),
+        time: formatRelativeTime(item.minutesAgo, locale, t("justNow")),
+      })),
+    [locale, t],
   );
 
   useEffect(() => {
@@ -85,7 +114,12 @@ export function NotificationDropdown({
   return (
     <Popover open={open} onOpenChange={handleOpenChange}>
       <PopoverTrigger asChild>
-        <button type="button" className={`relative ${buttonClassName}`} title="Notifications">
+        <button
+          type="button"
+          className={`relative ${buttonClassName}`}
+          title={t("notifications")}
+          aria-label={t("notifications")}
+        >
           <FaBell />
           {unreadCount > 0 && (
             <span className="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-rose-500 px-1 text-[10px] font-semibold text-white">
@@ -107,18 +141,18 @@ export function NotificationDropdown({
               </p>
               <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
                 {unreadCount > 0
-                  ? `${unreadCount} unread update${unreadCount > 1 ? "s" : ""}`
-                  : "You’re all caught up"}
+                  ? t("notificationsUnreadUpdates", { count: unreadCount })
+                  : t("notificationsAllCaughtUp")}
               </p>
             </div>
             <span className="rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-semibold text-slate-600 dark:bg-slate-800 dark:text-slate-300">
-              {NOTIFICATIONS.length} total
+              {t("notificationsTotal", { count: notifications.length })}
             </span>
           </div>
         </div>
 
         <div className="max-h-80 overflow-y-auto p-2">
-          {NOTIFICATIONS.map((item, index) => {
+          {notifications.map((item, index) => {
             const isUnread = index < unreadCount;
 
             return (
@@ -136,7 +170,7 @@ export function NotificationDropdown({
                     </p>
                     {isUnread && (
                       <span className="rounded-full bg-indigo-50 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-indigo-600 dark:bg-indigo-500/15 dark:text-indigo-300">
-                        New
+                        {t("new")}
                       </span>
                     )}
                   </div>

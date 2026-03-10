@@ -31,7 +31,7 @@ export function useLiveAnalytics({ enabled }: { enabled: boolean }) {
 
     intervalRef.current = window.setInterval(() => {
       const prev = latest.current;
-      const visitors = clamp(prev.visitors + randomDelta(20), 0, 1500);
+      const visitors = Math.round(clamp(prev.visitors + randomDelta(20), 0, 1500));
       const revenue = Math.max(0, prev.revenue + randomDelta(50));
       const orders = Math.max(0, Math.round(prev.orders + randomDelta(3)));
       const conversionRate = clamp(Math.random() * 5 + 1, 0.2, 10);

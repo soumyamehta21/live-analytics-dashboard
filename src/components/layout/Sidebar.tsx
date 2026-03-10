@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { useTranslation } from "react-i18next";
 
 import {
   FaChartPie,
@@ -10,19 +11,23 @@ import {
 
 type MenuItem = {
   key: string;
-  label: string;
+  labelKey: string;
   icon: ReactNode;
 };
 
 const PRIMARY_MENU: MenuItem[] = [
-  { key: "dashboard", label: "Dashboard", icon: <FaHome /> },
-  { key: "projects", label: "Projects", icon: <FaFolderOpen /> },
-  { key: "estimates", label: "Estimates", icon: <FaClipboardList /> },
-  { key: "reports", label: "Reports", icon: <FaChartPie /> },
+  { key: "dashboard", labelKey: "dashboard", icon: <FaHome /> },
+  { key: "live-feed", labelKey: "liveFeed", icon: <FaFolderOpen /> },
+  { key: "revenue", labelKey: "revenue", icon: <FaChartPie /> },
+  {
+    key: "recent-activity",
+    labelKey: "recentActivity",
+    icon: <FaClipboardList />,
+  },
 ];
 
 const BOTTOM_MENU: MenuItem[] = [
-  { key: "settings", label: "Settings", icon: <FaCog /> },
+  { key: "settings", labelKey: "settings", icon: <FaCog /> },
 ];
 
 type SidebarProps = {
@@ -31,14 +36,16 @@ type SidebarProps = {
 };
 
 export function Sidebar({ selectedKey = "dashboard", onSelect }: SidebarProps) {
+  const { t } = useTranslation();
+
   return (
-    <aside className="group relative flex h-full w-16 flex-col overflow-hidden border-r border-slate-200 bg-white transition-[width] duration-500 ease-out hover:w-56 dark:border-slate-800 dark:bg-slate-900">
+    <aside className="group relative flex h-full w-16 flex-col overflow-hidden border-r border-slate-200 bg-white transition-[width] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:w-56 dark:border-slate-800 dark:bg-slate-900">
       <div className="grid h-16 grid-cols-[2.625rem_1fr] items-center gap-x-[8px] border-b border-slate-200 px-3 dark:border-slate-800">
         <div className="flex h-[42px] w-[42px] items-center justify-center rounded-full border border-indigo-300 bg-indigo-100 text-indigo-700 shadow-sm dark:border-indigo-400/40 dark:bg-indigo-400/15 dark:text-indigo-200">
           <span className="text-[0.82rem] font-semibold">LA</span>
         </div>
-        <div className="max-w-0 overflow-hidden whitespace-nowrap text-base font-semibold tracking-[0.01em] text-slate-900 opacity-0 transition-[max-width,opacity] duration-300 ease-out group-hover:max-w-[11rem] group-hover:opacity-100 dark:text-white">
-          Live Analytics
+        <div className="overflow-hidden whitespace-nowrap text-base font-semibold tracking-[0.01em] text-slate-900 opacity-0 transition-[opacity,transform] duration-200 ease-out -translate-x-1 group-hover:translate-x-0 group-hover:opacity-100 dark:text-white">
+          {t("brandName")}
         </div>
       </div>
 
@@ -59,8 +66,8 @@ export function Sidebar({ selectedKey = "dashboard", onSelect }: SidebarProps) {
               <span className="flex h-8 w-8 items-center justify-center text-lg opacity-80">
                 {item.icon}
               </span>
-              <span className="max-w-0 overflow-hidden whitespace-nowrap text-left opacity-0 transition-[max-width,opacity] duration-300 ease-out group-hover:max-w-[9rem] group-hover:opacity-100">
-                {item.label}
+              <span className="overflow-hidden whitespace-nowrap text-left opacity-0 transition-[opacity,transform] duration-200 ease-out -translate-x-1 group-hover:translate-x-0 group-hover:opacity-100">
+                {t(item.labelKey)}
               </span>
             </button>
           );
@@ -78,8 +85,8 @@ export function Sidebar({ selectedKey = "dashboard", onSelect }: SidebarProps) {
             <span className="flex h-8 w-8 items-center justify-center text-lg opacity-80">
               {item.icon}
             </span>
-            <span className="max-w-0 overflow-hidden whitespace-nowrap text-left opacity-0 transition-[max-width,opacity] duration-300 ease-out group-hover:max-w-[9rem] group-hover:opacity-100">
-              {item.label}
+            <span className="overflow-hidden whitespace-nowrap text-left opacity-0 transition-[opacity,transform] duration-200 ease-out -translate-x-1 group-hover:translate-x-0 group-hover:opacity-100">
+              {t(item.labelKey)}
             </span>
           </button>
         ))}

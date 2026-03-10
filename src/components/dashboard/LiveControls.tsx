@@ -9,19 +9,20 @@ type LiveControlsProps = {
 };
 
 export function LiveControls({ running, onToggle }: LiveControlsProps) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const lastUpdatedAt = useSelector(
     (state: RootState) => state.analytics.lastUpdatedAt,
   );
+  const locale = i18n.resolvedLanguage ?? i18n.language;
 
   const formatted = useMemo(() => {
     const date = new Date(lastUpdatedAt);
-    return date.toLocaleTimeString([], {
+    return date.toLocaleTimeString(locale, {
       hour: "2-digit",
       minute: "2-digit",
       second: "2-digit",
     });
-  }, [lastUpdatedAt]);
+  }, [lastUpdatedAt, locale]);
 
   return (
     <div className="flex flex-col gap-3 rounded-2xl border border-white/80 bg-gradient-to-r from-white via-white to-indigo-50/40 p-4 shadow-[0_20px_40px_-28px_rgba(15,23,42,0.35)] sm:flex-row sm:items-center sm:justify-between dark:border-slate-800 dark:bg-none dark:bg-slate-900 dark:shadow-none">
@@ -38,7 +39,7 @@ export function LiveControls({ running, onToggle }: LiveControlsProps) {
               running ? "bg-emerald-500" : "bg-amber-500"
             }`}
           />
-          {running ? "Live" : "Paused"}
+          {running ? t("liveStatus") : t("pausedStatus")}
         </span>
         <p className="mt-1 text-sm text-slate-700 dark:text-slate-300">
           {t("lastUpdate")}:

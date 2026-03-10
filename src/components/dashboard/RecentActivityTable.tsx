@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import type { TrafficPoint } from "../../redux/analyticsSlice";
 
 type RecentActivityTableProps = {
@@ -20,8 +21,8 @@ type SortDirection = "asc" | "desc";
 
 const ROWS_PER_PAGE = 6;
 
-function formatCurrency(value: number) {
-  return new Intl.NumberFormat(undefined, {
+function formatCurrency(value: number, locale: string) {
+  return new Intl.NumberFormat(locale, {
     style: "currency",
     currency: "USD",
     maximumFractionDigits: 2,
@@ -34,9 +35,11 @@ function deriveAmount(point: TrafficPoint, index: number) {
 }
 
 export function RecentActivityTable({ data }: RecentActivityTableProps) {
+  const { t, i18n } = useTranslation();
   const [page, setPage] = useState(1);
   const [sortKey, setSortKey] = useState<SortKey>("date");
   const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
+  const locale = i18n.resolvedLanguage ?? i18n.language;
 
   const rows: ActivityRow[] = useMemo(
     () =>
@@ -47,25 +50,25 @@ export function RecentActivityTable({ data }: RecentActivityTableProps) {
           id: `${point.timestamp}`,
           user: ["Ava", "Noah", "Mia", "Ethan", "Liam", "Emma"][index % 6],
           action: [
-            "Purchase",
-            "Subscription",
-            "Refund",
-            "Upgrade",
-            "Trial",
-            "Purchase",
+            t("recentActivityPurchase"),
+            t("recentActivitySubscription"),
+            t("recentActivityRefund"),
+            t("recentActivityUpgrade"),
+            t("recentActivityTrial"),
+            t("recentActivityPurchase"),
           ][index % 6],
-          date: new Date(point.timestamp).toLocaleString(undefined, {
+          date: new Date(point.timestamp).toLocaleString(locale, {
             month: "short",
             day: "numeric",
             hour: "2-digit",
             minute: "2-digit",
           }),
-          amount: formatCurrency(amountValue),
+          amount: formatCurrency(amountValue, locale),
           timestamp: point.timestamp,
           amountValue,
         };
       }),
-    [data],
+    [data, locale, t],
   );
 
   const sortedRows = useMemo(() => {
@@ -149,10 +152,10 @@ export function RecentActivityTable({ data }: RecentActivityTableProps) {
     <div className="rounded-2xl border border-white/80 bg-white/95 p-4 shadow-[0_20px_40px_-28px_rgba(15,23,42,0.35)] dark:border-slate-800 dark:bg-slate-900 dark:shadow-none">
       <div className="mb-4">
         <h2 className="text-base font-semibold text-slate-900 dark:text-slate-100">
-          Recent activity
+          {t("recentActivity")}
         </h2>
         <p className="mt-1 text-xs text-slate-600 dark:text-slate-400">
-          Latest transactions and conversions.
+          {t("recentActivityDescription")}
         </p>
       </div>
 
@@ -175,7 +178,7 @@ export function RecentActivityTable({ data }: RecentActivityTableProps) {
                   onClick={() => handleSort("user")}
                   className="group inline-flex items-center gap-1.5 transition-colors hover:text-indigo-600 dark:hover:text-indigo-300"
                 >
-                  <span>User</span>
+                  <span>{t("tableUser")}</span>
                   {renderSortIndicator("user")}
                 </button>
               </th>
@@ -194,7 +197,7 @@ export function RecentActivityTable({ data }: RecentActivityTableProps) {
                   onClick={() => handleSort("action")}
                   className="group inline-flex items-center gap-1.5 transition-colors hover:text-indigo-600 dark:hover:text-indigo-300"
                 >
-                  <span>Action</span>
+                  <span>{t("tableAction")}</span>
                   {renderSortIndicator("action")}
                 </button>
               </th>
@@ -213,7 +216,7 @@ export function RecentActivityTable({ data }: RecentActivityTableProps) {
                   onClick={() => handleSort("date")}
                   className="group inline-flex items-center gap-1.5 transition-colors hover:text-indigo-600 dark:hover:text-indigo-300"
                 >
-                  <span>Date</span>
+                  <span>{t("tableDate")}</span>
                   {renderSortIndicator("date")}
                 </button>
               </th>
@@ -232,7 +235,7 @@ export function RecentActivityTable({ data }: RecentActivityTableProps) {
                   onClick={() => handleSort("amount")}
                   className="group inline-flex items-center gap-1.5 transition-colors hover:text-indigo-600 dark:hover:text-indigo-300"
                 >
-                  <span>Amount</span>
+                  <span>{t("tableAmount")}</span>
                   {renderSortIndicator("amount")}
                 </button>
               </th>
@@ -264,7 +267,11 @@ export function RecentActivityTable({ data }: RecentActivityTableProps) {
 
       <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <p className="text-xs text-slate-500 dark:text-slate-400">
-          Showing {visibleStart}-{visibleEnd} of {sortedRows.length} entries
+          {t("tableShowingEntries", {
+            start: visibleStart,
+            end: visibleEnd,
+            total: sortedRows.length,
+          })}
         </p>
 
         <div className="flex flex-wrap items-center gap-2">
@@ -278,7 +285,7 @@ export function RecentActivityTable({ data }: RecentActivityTableProps) {
             disabled={currentPage === 1}
             className="inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium text-slate-600 transition-colors hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-600 disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:border-slate-600 dark:hover:bg-slate-700 dark:hover:text-white"
           >
-            Previous
+            {t("previous")}
           </button>
 
           {pageNumbers.map((pageNumber) => {
@@ -310,7 +317,7 @@ export function RecentActivityTable({ data }: RecentActivityTableProps) {
             disabled={currentPage === totalPages}
             className="inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium text-slate-600 transition-colors hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-600 disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:border-slate-600 dark:hover:bg-slate-700 dark:hover:text-white"
           >
-            Next
+            {t("next")}
           </button>
         </div>
       </div>

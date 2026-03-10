@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import type { TrafficPoint } from "../../redux/analyticsSlice";
 import {
   Bar,
@@ -15,16 +16,18 @@ type RevenueChartProps = {
   isDark: boolean;
 };
 
-function formatTime(timestamp: number) {
-  return new Date(timestamp).toLocaleTimeString([], {
+const Y_AXIS_CURRENCY_LOCALE = "en-US";
+
+function formatTime(timestamp: number, locale: string) {
+  return new Date(timestamp).toLocaleTimeString(locale, {
     hour: "2-digit",
     minute: "2-digit",
     second: "2-digit",
   });
 }
 
-function formatCurrency(value: number) {
-  return new Intl.NumberFormat(undefined, {
+function formatCurrency(value: number, locale: string) {
+  return new Intl.NumberFormat(locale, {
     style: "currency",
     currency: "USD",
     maximumFractionDigits: value >= 1000 ? 0 : 2,
@@ -32,6 +35,8 @@ function formatCurrency(value: number) {
 }
 
 export function RevenueChart({ data, title, isDark }: RevenueChartProps) {
+  const { t, i18n } = useTranslation();
+  const locale = i18n.resolvedLanguage ?? i18n.language;
   const latest = data[data.length - 1]?.revenue ?? 0;
   const previous = data[0]?.revenue ?? 0;
   const change = latest - previous;
@@ -63,12 +68,12 @@ export function RevenueChart({ data, title, isDark }: RevenueChartProps) {
             {title}
           </h2>
           <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-            Revenue movement across the current live session.
+            {t("revenueChartDescription")}
           </p>
         </div>
         <div className="text-right">
           <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">
-            {formatCurrency(latest)}
+            {formatCurrency(latest, locale)}
           </p>
           <p
             className={`text-xs font-medium ${
@@ -78,7 +83,7 @@ export function RevenueChart({ data, title, isDark }: RevenueChartProps) {
             }`}
           >
             {change >= 0 ? "+" : ""}
-            {formatCurrency(change)} vs first sample
+            {formatCurrency(change, locale)} {t("vsFirstSample")}
           </p>
         </div>
       </div>
@@ -96,22 +101,28 @@ export function RevenueChart({ data, title, isDark }: RevenueChartProps) {
             />
             <XAxis
               dataKey="timestamp"
-              tickFormatter={formatTime}
+              tickFormatter={(value: number) => formatTime(value, locale)}
               minTickGap={24}
               tick={{ fill: palette.tick, fontSize: 12 }}
               axisLine={false}
               tickLine={false}
             />
             <YAxis
-              tickFormatter={(value: number) => formatCurrency(value)}
+              tickFormatter={(value: number) =>
+                formatCurrency(value, Y_AXIS_CURRENCY_LOCALE)
+              }
               tick={{ fill: palette.tick, fontSize: 12 }}
               axisLine={false}
               tickLine={false}
               width={76}
             />
             <Tooltip
-              labelFormatter={(label) => formatTime(Number(label))}
-              formatter={(value) => [formatCurrency(Number(value)), "Revenue"]}
+              cursor={false}
+              labelFormatter={(label) => formatTime(Number(label), locale)}
+              formatter={(value) => [
+                formatCurrency(Number(value), locale),
+                t("revenueLabel"),
+              ]}
               contentStyle={{
                 borderRadius: 12,
                 border: `1px solid ${palette.tooltipBorder}`,

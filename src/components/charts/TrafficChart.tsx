@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import type { TrafficPoint } from "../../redux/analyticsSlice";
 import {
   CartesianGrid,
@@ -15,22 +16,24 @@ type TrafficChartProps = {
   isDark: boolean;
 };
 
-function formatTime(timestamp: number) {
-  return new Date(timestamp).toLocaleTimeString([], {
+function formatTime(timestamp: number, locale: string) {
+  return new Date(timestamp).toLocaleTimeString(locale, {
     hour: "2-digit",
     minute: "2-digit",
     second: "2-digit",
   });
 }
 
-function formatCompactNumber(value: number) {
-  return new Intl.NumberFormat(undefined, {
+function formatCompactNumber(value: number, locale: string) {
+  return new Intl.NumberFormat(locale, {
     notation: "compact",
     maximumFractionDigits: 1,
   }).format(value);
 }
 
 export function TrafficChart({ data, title, isDark }: TrafficChartProps) {
+  const { t, i18n } = useTranslation();
+  const locale = i18n.resolvedLanguage ?? i18n.language;
   const latest = data[data.length - 1];
   const peakVisitors = data.reduce(
     (max, point) => Math.max(max, point.visitors),
@@ -66,15 +69,16 @@ export function TrafficChart({ data, title, isDark }: TrafficChartProps) {
             {title}
           </h2>
           <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-            Active audience trend sampled every 2 seconds.
+            {t("trafficChartDescription")}
           </p>
         </div>
         <div className="flex gap-2 text-xs">
           <span className="rounded-full bg-indigo-50 px-3 py-1 font-medium text-indigo-700 ring-1 ring-indigo-100 dark:bg-indigo-500/10 dark:text-indigo-200 dark:ring-0">
-            Now {latest ? formatCompactNumber(latest.visitors) : "0"}
+            {t("chartNow")}{" "}
+            {latest ? formatCompactNumber(latest.visitors, locale) : "0"}
           </span>
           <span className="rounded-full bg-slate-100 px-3 py-1 font-medium text-slate-700 ring-1 ring-slate-200 dark:bg-slate-700/60 dark:text-slate-200 dark:ring-0">
-            Peak {formatCompactNumber(peakVisitors)}
+            {t("chartPeak")} {formatCompactNumber(peakVisitors, locale)}
           </span>
         </div>
       </div>
@@ -92,24 +96,26 @@ export function TrafficChart({ data, title, isDark }: TrafficChartProps) {
             />
             <XAxis
               dataKey="timestamp"
-              tickFormatter={formatTime}
+              tickFormatter={(value: number) => formatTime(value, locale)}
               minTickGap={24}
               tick={{ fill: palette.tick, fontSize: 12 }}
               axisLine={false}
               tickLine={false}
             />
             <YAxis
-              tickFormatter={(value: number) => formatCompactNumber(value)}
+              tickFormatter={(value: number) =>
+                formatCompactNumber(value, locale)
+              }
               tick={{ fill: palette.tick, fontSize: 12 }}
               axisLine={false}
               tickLine={false}
               width={52}
             />
             <Tooltip
-              labelFormatter={(label) => formatTime(Number(label))}
+              labelFormatter={(label) => formatTime(Number(label), locale)}
               formatter={(value) => [
-                formatCompactNumber(Number(value)),
-                "Visitors",
+                formatCompactNumber(Number(value), locale),
+                t("visitors"),
               ]}
               contentStyle={{
                 borderRadius: 12,

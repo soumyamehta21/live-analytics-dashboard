@@ -10,15 +10,36 @@ import { TrafficChart } from "../components/charts/TrafficChart";
 import { useLiveAnalytics } from "../hooks/useLiveAnalytics";
 import type { RootState } from "../redux/store";
 
+function formatNumber(value: number, locale: string) {
+  return new Intl.NumberFormat(locale).format(value);
+}
+
+function formatCurrency(value: number, locale: string) {
+  return new Intl.NumberFormat(locale, {
+    style: "currency",
+    currency: "USD",
+    maximumFractionDigits: 2,
+  }).format(value);
+}
+
+function formatPercentage(value: number, locale: string) {
+  return new Intl.NumberFormat(locale, {
+    style: "percent",
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(value / 100);
+}
+
 type DashboardPageProps = {
   isDark: boolean;
   onToggleTheme: () => void;
 };
 
 export function DashboardPage({ isDark, onToggleTheme }: DashboardPageProps) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const analytics = useSelector((state: RootState) => state.analytics);
   const { running, setRunning } = useLiveAnalytics({ enabled: true });
+  const locale = i18n.resolvedLanguage ?? i18n.language;
 
   return (
     <Layout
@@ -35,28 +56,28 @@ export function DashboardPage({ isDark, onToggleTheme }: DashboardPageProps) {
         <section className="grid gap-4 lg:grid-cols-4">
           <MetricCard
             title={t("activeVisitors")}
-            value={analytics.visitors.toFixed(0)}
+            value={formatNumber(analytics.visitors, locale)}
             subtitle={t("liveUsers")}
             icon={<FaUsers />}
             variant="primary"
           />
           <MetricCard
             title={t("revenue")}
-            value={`$${analytics.revenue.toFixed(2)}`}
+            value={formatCurrency(analytics.revenue, locale)}
             subtitle={t("grossRevenue")}
             icon={<FaCoins />}
             variant="success"
           />
           <MetricCard
             title={t("orders")}
-            value={analytics.orders}
+            value={formatNumber(analytics.orders, locale)}
             subtitle={t("completedConversions")}
             icon={<FaShoppingCart />}
             variant="warning"
           />
           <MetricCard
             title={t("conversionRate")}
-            value={`${analytics.conversionRate.toFixed(2)}%`}
+            value={formatPercentage(analytics.conversionRate, locale)}
             subtitle={t("visitsToOrders")}
             icon={<FaChartLine />}
             variant="neutral"

@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { FaMoon, FaSun } from "react-icons/fa";
 import { DatePicker } from "../ui/DatePicker";
 import { LanguageDropdown } from "../ui/LanguageDropdown";
@@ -19,6 +20,7 @@ export function Topbar({
   onToggleTheme,
   isDark,
 }: TopbarProps) {
+  const { t } = useTranslation();
   const initials = useMemo(() => {
     const parts = userName.trim().split(" ");
     return parts.length > 1
@@ -46,7 +48,8 @@ export function Topbar({
           type="button"
           onClick={onToggleTheme}
           className={btnClass}
-          title="Toggle theme"
+          title={t("toggleTheme")}
+          aria-label={t("toggleTheme")}
         >
           {isDark ? <FaSun /> : <FaMoon />}
         </button>
