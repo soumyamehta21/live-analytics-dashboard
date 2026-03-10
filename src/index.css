@@ -1,68 +1,271 @@
+@import "tailwindcss";
+@config "../tailwind.config.js";
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  color-scheme: light;
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
+html,
+body {
+  height: 100%;
 }
 
 body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
+  min-height: 100%;
+  background:
+    radial-gradient(circle at top, rgba(99, 102, 241, 0.12), transparent 28%),
+    linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+  color: #0f172a;
+  font-family:
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+  transition:
+    background-color 180ms ease,
+    color 180ms ease;
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-}
-
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
+button:not(:disabled),
+[role="button"]:not([aria-disabled="true"]),
+a[href],
+label[for],
+select:not(:disabled),
+summary,
+input[type="checkbox"]:not(:disabled),
+input[type="radio"]:not(:disabled),
+input[type="range"]:not(:disabled) {
   cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+button:disabled,
+select:disabled,
+input:disabled {
+  cursor: not-allowed;
+}
+
+button:focus,
+button:focus-visible,
+[role="button"]:focus,
+[role="button"]:focus-visible,
+a[href]:focus,
+a[href]:focus-visible,
+summary:focus,
+summary:focus-visible,
+select:focus,
+select:focus-visible,
+input[type="checkbox"]:focus,
+input[type="checkbox"]:focus-visible,
+input[type="radio"]:focus,
+input[type="radio"]:focus-visible,
+input[type="range"]:focus,
+input[type="range"]:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.dark {
+  color-scheme: dark;
+}
+
+.dark body {
+  background: #050816;
+  color: #f1f5f9;
+}
+
+#root {
+  height: 100%;
+}
+
+.shadow-card {
+  box-shadow:
+    0 1px 3px 0 rgb(0 0 0 / 0.06),
+    0 1px 2px -1px rgb(0 0 0 / 0.06);
+}
+
+.shadow-card-hover {
+  box-shadow:
+    0 4px 6px -1px rgb(0 0 0 / 0.08),
+    0 2px 4px -2px rgb(0 0 0 / 0.06);
+}
+
+/* Utility helpers */
+.scrollbar-thin {
+  scrollbar-width: thin;
+}
+.scrollbar-thin::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.6);
+  border-radius: 9999px;
+}
+
+.dashboard-date-picker {
+  --rdp-accent-color: #e7e7e7;
+  --rdp-accent-background-color: rgba(255, 255, 255, 0.1);
+  --rdp-day-height: 3.25rem;
+  --rdp-day-width: 3.5rem;
+  --rdp-day_button-height: 3rem;
+  --rdp-day_button-width: 3rem;
+  --rdp-day_button-border: 0;
+  --rdp-day_button-border-radius: 0.95rem;
+  --rdp-nav-height: 2.75rem;
+  --rdp-nav_button-height: 2.5rem;
+  --rdp-nav_button-width: 2.5rem;
+  --rdp-months-gap: 2rem;
+  --rdp-selected-border: 0;
+  --rdp-today-color: #f5f5f5;
+  --rdp-range_middle-background-color: rgba(255, 255, 255, 0.1);
+  --rdp-range_middle-color: #f4f4f5;
+  --rdp-range_start-color: #111214;
+  --rdp-range_end-color: #111214;
+  --rdp-range_start-background: linear-gradient(
+    90deg,
+    transparent 50%,
+    var(--rdp-range_middle-background-color) 50%
+  );
+  --rdp-range_end-background: linear-gradient(
+    90deg,
+    var(--rdp-range_middle-background-color) 50%,
+    transparent 50%
+  );
+  --rdp-range_start-date-background-color: #e5e5e5;
+  --rdp-range_end-date-background-color: #e5e5e5;
+}
+
+.dashboard-date-picker .rdp-months {
+  justify-content: center;
+}
+
+.dashboard-date-picker .rdp-month {
+  width: auto;
+}
+
+.dashboard-date-picker .rdp-month_grid {
+  border-collapse: separate;
+  border-spacing: 0 0.45rem;
+}
+
+.dashboard-date-picker .rdp-day {
+  height: var(--rdp-day-height);
+  position: relative;
+  vertical-align: middle;
+}
+
+.dashboard-date-picker .rdp-day_button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--rdp-day_button-width);
+  height: var(--rdp-day_button-height);
+  margin-inline: auto;
+  border-radius: var(--rdp-day_button-border-radius);
+}
+
+.dashboard-date-picker .rdp-nav {
+  color: #fafafa;
+}
+
+.dashboard-date-picker .rdp-chevron {
+  fill: currentColor;
+}
+
+.dashboard-date-picker .rdp-button_previous:hover .rdp-chevron,
+.dashboard-date-picker .rdp-button_next:hover .rdp-chevron {
+  fill: currentColor;
+}
+
+/* Selected day button reset */
+.dashboard-date-picker .rdp-weekday {
+  text-transform: none;
+  font-weight: 500;
+  color: #737373;
+}
+
+.dashboard-date-picker .rdp-selected {
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+.dashboard-date-picker .rdp-selected .rdp-day_button {
+  border: 0;
+}
+
+.dashboard-date-picker .rdp-range_middle {
+  background-color: var(--rdp-range_middle-background-color);
+}
+
+.dashboard-date-picker .rdp-range_middle .rdp-day_button {
+  background: transparent;
+  border-radius: 0;
+  color: var(--rdp-range_middle-color);
+  font-weight: 600;
+}
+
+.dashboard-date-picker .rdp-range_middle .rdp-day_button:hover {
+  background: transparent;
+}
+
+.dashboard-date-picker .rdp-week .rdp-range_middle:first-child {
+  border-radius: 999px 0 0 999px;
+}
+
+.dashboard-date-picker .rdp-week .rdp-range_middle:last-child {
+  border-radius: 0 999px 999px 0;
+}
+
+.dashboard-date-picker .rdp-week .rdp-range_middle:first-child:last-child {
+  border-radius: 999px;
+}
+
+.dashboard-date-picker .rdp-range_start .rdp-day_button {
+  background-color: var(--rdp-range_start-date-background-color);
+  color: var(--rdp-range_start-color);
+  border-radius: var(--rdp-day_button-border-radius);
+  font-weight: 700;
+}
+
+.dashboard-date-picker .rdp-range_start .rdp-day_button:hover {
+  background-color: #f0f0f0;
+}
+
+.dashboard-date-picker .rdp-range_end .rdp-day_button {
+  background-color: var(--rdp-range_end-date-background-color);
+  color: var(--rdp-range_end-color);
+  border-radius: var(--rdp-day_button-border-radius);
+  font-weight: 700;
+}
+
+.dashboard-date-picker .rdp-range_end .rdp-day_button:hover {
+  background-color: #f0f0f0;
+}
+
+.dashboard-date-picker .rdp-range_start.rdp-range_end {
+  background: transparent;
+}
+
+.dashboard-date-picker
+  .rdp-today:not(.rdp-range_start):not(.rdp-range_end):not(.rdp-range_middle)
+  .rdp-day_button {
+  color: var(--rdp-today-color);
+  font-weight: 600;
+}
+
+.dashboard-date-picker .rdp-outside {
+  opacity: 1;
+}
+
+.dashboard-date-picker
+  .rdp-outside:not(.rdp-range_middle):not(.rdp-range_start):not(.rdp-range_end)
+  .rdp-day_button {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.dashboard-date-picker .rdp-outside.rdp-range_middle .rdp-day_button {
+  color: rgba(255, 255, 255, 0.7);
 }

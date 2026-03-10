@@ -1,13 +1,10 @@
-import React from "react";
+import { DashboardPage } from "./pages/DashboardPage";
+import { useTheme } from "./hooks/useTheme";
 
 function App() {
-  return (
-    <>
-      <div>
-        <h1>Live Analytics Dashboard</h1>
-      </div>
-    </>
-  );
+  const { isDark, toggle } = useTheme();
+
+  return <DashboardPage isDark={isDark} onToggleTheme={toggle} />;
 }
 
 export default App;
