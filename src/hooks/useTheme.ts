@@ -12,11 +12,10 @@ function resolveInitialMode(defaultMode: ThemeMode) {
     return stored;
   }
 
-  const prefersDark = window.matchMedia?.("(prefers-color-scheme: dark)").matches;
-  return prefersDark ? "dark" : "light";
+  return defaultMode;
 }
 
-export function useTheme(defaultMode: ThemeMode = "dark") {
+export function useTheme(defaultMode: ThemeMode = "light") {
   const [mode, setMode] = useState<ThemeMode>(() => resolveInitialMode(defaultMode));
 
   useEffect(() => {
