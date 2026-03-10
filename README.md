@@ -2,6 +2,10 @@
 
 A production-style live analytics dashboard built with React, TypeScript, Redux Toolkit, Tailwind CSS, and Recharts.
 
+## Live demo
+
+- https://soumyamehta21.github.io/live-analytics-dashboard/
+
 ## What I built
 
 This project is a frontend-only real-time analytics experience designed for an interview assignment. The dashboard simulates live business metrics and presents them in a clean, responsive admin layout.
